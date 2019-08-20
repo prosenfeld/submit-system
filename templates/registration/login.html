@@ -1,0 +1,16 @@
+{% extends 'evalbase/base.html' %}
+{% load bootstrap4 %}
+
+{% block title %}
+Login
+{% endblock %}
+
+{% block content %}
+<form method="post">
+  {% csrf_token %}
+  {% bootstrap_form form %}
+  {% buttons %}
+    <button type="submit" class="btn btn-primary">Login</button>
+  {% endbuttons %}
+</form>
+{% endblock %}
