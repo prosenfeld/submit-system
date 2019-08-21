@@ -16,10 +16,14 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.views.generic.base import TemplateView
+from evalbase import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('django.contrib.auth.urls')),
     path('signup/', TemplateView.as_view(template_name='evalbase/signup.html'), name='signup'),
+    path('profile/', views.ProfileDetail.as_view(), name='profile'),
+    path('profile/create', views.ProfileCreate.as_view(), name='profile-create'),
+    path('profile/edit', views.ProfileEdit.as_view(), name='profile-edit'),
     path('', TemplateView.as_view(template_name='evalbase/home.html'), name='home'),
 ]
