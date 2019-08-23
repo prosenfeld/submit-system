@@ -22,8 +22,16 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('django.contrib.auth.urls')),
     path('signup/', TemplateView.as_view(template_name='evalbase/signup.html'), name='signup'),
+
     path('profile/', views.ProfileDetail.as_view(), name='profile'),
     path('profile/create', views.ProfileCreate.as_view(), name='profile-create'),
     path('profile/edit', views.ProfileEdit.as_view(), name='profile-edit'),
+
+    path('org/my-orgs', views.OrganizationList.as_view(), name='my-orgs'),
+    path('org/edit/<name>', views.OrganizationEdit.as_view(), name='org-edit'),
+    path('org/create', views.OrganizationCreate.as_view(), name='org-create'),
+    path('org/join/<key>', views.OrganizationJoin.as_view(), name='org-join'),
+    path('org/<str:shortname>', views.OrganizationDetail.as_view(), name='org-detail'),
+
     path('', TemplateView.as_view(template_name='evalbase/home.html'), name='home'),
 ]

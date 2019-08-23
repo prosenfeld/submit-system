@@ -1,0 +1,39 @@
+{% extends 'evalbase/base.html' %}
+{% load bootstrap4 %}
+
+{% block title %}{{ object.shortname }}{% endblock %}
+
+{% block content %}
+<table class="table table-borderless">
+  <tbody>
+    <tr>
+      <th> Name </th>
+      <td> {{ object.longname }} </td>
+    </tr>
+    <tr>
+      <th> Owner </th>
+      <td> {{ object.owner }} </td>
+    </tr>
+    <tr>
+      <th> Contact </th>
+      <td> {{ object.contact_person }} </td>
+    </tr>
+    {% if object.owner is user %}
+    <tr>
+      <th> To join </th>
+      <td> Use <a href="{% url 'org-join' object.passphrase %}">this URL</a> to invite people to join your organization.</td>
+    </tr>
+    <tr>
+      <th> Members </th>
+      <td>
+	{% for m in object.members %}
+	m<br/>
+	{% empty %}
+	(none yet)
+	{% endfor %}
+      </td>
+    </tr>
+    {% endif %}
+  </tbody>
+</table>
+{% endblock %}
