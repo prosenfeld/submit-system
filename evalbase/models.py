@@ -43,7 +43,9 @@ class Organization(models.Model):
     passphrase = models.CharField(
         max_length=20,
         editable=False)
-    members = models.ManyToManyField(User)
+    members = models.ManyToManyField(
+        User,
+        related_name='member_of')
 
     def __str__(self):
         return self.shortname

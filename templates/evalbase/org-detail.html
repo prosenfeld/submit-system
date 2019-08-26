@@ -12,13 +12,19 @@
     </tr>
     <tr>
       <th> Owner </th>
-      <td> {{ object.owner }} </td>
+      <td> {{ object.owner }} ({{ object.owner.first_name }}
+	{{ object.owner.last_name }},
+	<a href="mailto:{{ object.owner.email }}">
+	{{ object.owner.email }}</a>)</td>
     </tr>
     <tr>
       <th> Contact </th>
-      <td> {{ object.contact_person }} </td>
+      <td> {{ object.contact_person }}  ({{ object.contact_person.first_name }}
+	{{ object.contact_person.last_name }}) ,
+	<a href="mailto:{{ object.contact_person.email }}">
+	{{ object.contact_person.email }}</a>)</td>
     </tr>
-    {% if object.owner is user %}
+    {% if user == object.owner %}
     <tr>
       <th> To join </th>
       <td> Use <a href="{% url 'org-join' object.passphrase %}">this URL</a> to invite people to join your organization.</td>
@@ -26,8 +32,9 @@
     <tr>
       <th> Members </th>
       <td>
-	{% for m in object.members %}
-	m<br/>
+	{% for m in object.members.all %}
+	{{ m }} ({{ m.first_name }} {{ m.last_name }},
+	<a href="mailto:{{ m.email }}">{{ m.email }}</a>)<br/>
 	{% empty %}
 	(none yet)
 	{% endfor %}

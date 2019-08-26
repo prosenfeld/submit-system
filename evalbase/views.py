@@ -55,9 +55,9 @@ class OrganizationList(generic.ListView):
 
     def get_queryset(self):
         # return orgs I own or I am a member of.
-        return Organization.objects \
-                .filter(members=self.request.user) \
-                .filter(owner=self.request.user)
+        rs = Organization.objects.filter(members__pk=self.request.user.pk)
+        rs = rs.union(Organization.objects.filter(owner=self.request.user))
+        return rs
 
 class OrganizationDetail(generic.DetailView):
     model = Organization

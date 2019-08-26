@@ -5,7 +5,7 @@
 {% block content %}
 <ul>
   {% for org in object_list %}
-  <li><a href="{% url 'org-detail' org.shortname %}"
+  <li><a href="{% url 'org-detail' org.shortname %}">
   {{ org.longname }}</a>
   ({{ org.shortname }})</li>
   {% endfor %}
