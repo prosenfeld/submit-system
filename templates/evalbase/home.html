@@ -6,6 +6,7 @@
 {% if user.is_authenticated %}
 <p>
 Hi {{ user.username }}! <br/>
+<a href="{% url 'profile' %}">profile</a> &nbsp; | &nbsp;
 <a href="{% url 'logout' %}">logout</a>
 </p>
 
@@ -18,17 +19,24 @@ You are currently signed up to participate in:<br/>
   {% empty %}
   <li>(none yet!)</li>
   {% endfor %}
+</ul>
+
 <p>
 Conferences open for registration:<br/>
+{% if open_evals %}
+(Follow a link below to register a new organization with a
+conference.  To join an organization, ask their contact for a signup
+link.)
 <ul>
   {% for conf in open_evals %}
   <li><a href="{% url 'org-create' conf %}">
   ({{ conf.shortname }})</a>
   {{ conf.longname }}</li>
-  {% empty %}
-  <li> (none right now, come back later!)</li>
   {% endfor %}
 </ul>
+{% else %}
+(none right now, come back later!)
+{% endif %}
 </p>
 
 
@@ -36,6 +44,7 @@ Conferences open for registration:<br/>
 {% else %}
   <p>You are not logged in</p>
   <a href="{% url 'login' %}">login</a> or
+  <a href="{% url 'signup' %}">create an account</a> or
   <a href="{% url 'password_reset' %}">reset password</a>
 {% endif %}
 {% endblock %}

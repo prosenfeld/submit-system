@@ -8,8 +8,8 @@ from .models import *
 
 class SignUp(generic.edit.CreateView):
     form_class = UserCreationForm
-    success_url = reverse_lazy('profile-create')
-    template_name = 'signup.html'
+    success_url = reverse_lazy('home')
+    template_name = 'evalbase/signup.html'
 
 class ProfileDetail(generic.detail.DetailView):
     model = UserProfile

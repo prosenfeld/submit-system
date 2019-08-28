@@ -21,7 +21,7 @@ from evalbase import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('django.contrib.auth.urls')),
-    path('signup/', TemplateView.as_view(template_name='evalbase/signup.html'), name='signup'),
+    path('signup/', views.SignUp.as_view(template_name='evalbase/signup.html'), name='signup'),
 
     path('profile/', views.ProfileDetail.as_view(), name='profile'),
     path('profile/create', views.ProfileCreate.as_view(), name='profile-create'),
