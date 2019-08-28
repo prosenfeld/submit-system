@@ -4,8 +4,35 @@
 
 {% block content %}
 {% if user.is_authenticated %}
-  Hi {{ user.username }}!
-  <a href="{% url 'logout' %}">logout</a>
+<p>
+Hi {{ user.username }}! <br/>
+<a href="{% url 'logout' %}">logout</a>
+</p>
+
+<p>
+You are currently signed up to participate in:<br/>
+<ul>
+  {% for org in my_orgs %}
+  <li> {{ org.conference.shortname }}
+  (as a member of the {{ org.shortname }} group)</li>
+  {% empty %}
+  <li>(none yet!)</li>
+  {% endfor %}
+<p>
+Conferences open for registration:<br/>
+<ul>
+  {% for conf in open_evals %}
+  <li><a href="{% url 'org-create' conf %}">
+  ({{ conf.shortname }})</a>
+  {{ conf.longname }}</li>
+  {% empty %}
+  <li> (none right now, come back later!)</li>
+  {% endfor %}
+</ul>
+</p>
+
+
+
 {% else %}
   <p>You are not logged in</p>
   <a href="{% url 'login' %}">login</a> or

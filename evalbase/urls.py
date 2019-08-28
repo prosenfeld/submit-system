@@ -33,5 +33,5 @@ urlpatterns = [
     path('org/join/<key>', views.OrganizationJoin.as_view(), name='org-join'),
     path('org/<str:shortname>', views.OrganizationDetail.as_view(), name='org-detail'),
 
-    path('', TemplateView.as_view(template_name='evalbase/home.html'), name='home'),
+    path('', views.HomeView.as_view(template_name='evalbase/home.html'), name='home'),
 ]

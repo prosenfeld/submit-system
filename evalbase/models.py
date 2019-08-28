@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.urls import reverse, reverse_lazy
+from django.utils.text import slugify
 
 class UserProfile(models.Model):
     user = models.OneToOneField(
@@ -22,7 +23,21 @@ class UserProfile(models.Model):
     
     def get_absolute_url(self):
         return reverse('profile')
+
+class Conference(models.Model):
+    shortname = models.CharField(
+        max_length=15)
+    longname = models.CharField(
+        max_length=50)
+    open_signup = models.BooleanField()
+    tech_contact = models.EmailField()
+    admin_contact = models.EmailField()
+    complete = models.BooleanField()
+
+    def __str__(self):
+        return self.shortname
     
+
 class Organization(models.Model):
     owner = models.ForeignKey(
         User,
@@ -46,6 +61,9 @@ class Organization(models.Model):
     members = models.ManyToManyField(
         User,
         related_name='member_of')
+    conference = models.ForeignKey(
+        Conference,
+        on_delete=models.PROTECT)
 
     def __str__(self):
         return self.shortname

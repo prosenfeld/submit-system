@@ -1,14 +1,3 @@
-class Conference(models.Model):
-    shortname = models.CharField(
-        max_length=15)
-    longname = models.CharField(
-        max_length=50)
-    open_signup = models.BooleanField()
-    tech_contact = models.EmailField()
-    admin_contact = models.EmailField()
-    complete = models.BooleanField()
-    participants = models.ManyToManyField(Organization)
-
 class Track(models.Model):
     shortname = models.CharField(
         max_length=15)

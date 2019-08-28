@@ -89,6 +89,6 @@ class HomeView(generic.base.TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['open_evals'] = Conference.objects.filter(open_signup=True)
-        context['my_evals'] = Conference.objects.filter(participants__members__id=self.request.user.id)
+        context['my_orgs'] = Organization.objects.filter(members__pk=self.request.user.pk).filter(conference__complete=False)
         return context
 

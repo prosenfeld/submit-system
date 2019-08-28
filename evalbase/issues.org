@@ -1,0 +1,9 @@
+* Issues
+
+** DONE Make an issue list.
+** TODO Editing the user profile.
+** TODO Sign up a new organization for a conference.
+** TODO Join an organization.
+** TODO Edit organization details.
+** TODO Update home view to include open conferences and my memberships
+
