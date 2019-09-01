@@ -4,6 +4,7 @@
 {% block title %}Create an organization{% endblock %}
 
 {% block content %}
+Complete this form to register to participate in {{ conf.longname }}</p>
 <form method="post">
   {% csrf_token %}
   {% bootstrap_field form.shortname show_help=True placeholder='nist' %}

@@ -4,6 +4,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.views import generic
+from django.http import HttpResponseRedirect, Http404
+from django.core.exceptions import PermissionDenied
 from .models import *
 
 class SignUp(generic.edit.CreateView):
@@ -11,7 +13,10 @@ class SignUp(generic.edit.CreateView):
     success_url = reverse_lazy('home')
     template_name = 'evalbase/signup.html'
 
-class ProfileDetail(generic.detail.DetailView):
+class EvalBaseLoginReqdMixin(LoginRequiredMixin):
+    login_url = reverse_lazy('login')
+    
+class ProfileDetail(EvalBaseLoginReqdMixin, generic.detail.DetailView):
     model = UserProfile
     template_name = 'evalbase/profile_view.html'
 
@@ -27,7 +32,7 @@ class ProfileDetail(generic.detail.DetailView):
         context['user'] = User.objects.get(pk=self.request.user.id)
         return context
 
-class ProfileCreate(generic.edit.CreateView):
+class ProfileCreate(EvalBaseLoginReqdMixin, generic.edit.CreateView):
     model = UserProfile
     fields = ['street_address', 'city_state', 'country', 'postal_code']
     template_name = 'evalbase/profile_form.html'
@@ -37,7 +42,7 @@ class ProfileCreate(generic.edit.CreateView):
         form.instance.user = self.request.user
         return super().form_valid(form)
 
-class ProfileEdit(generic.edit.UpdateView):
+class ProfileEdit(EvalBaseLoginReqdMixin, generic.edit.UpdateView):
     model = UserProfile
     fields = ['street_address', 'city_state', 'country', 'postal_code']
     template_name = 'evalbase/profile_form.html'
@@ -49,7 +54,7 @@ class ProfileEdit(generic.edit.UpdateView):
         except:
             return None
 
-class OrganizationList(generic.ListView):
+class OrganizationList(EvalBaseLoginReqdMixin, generic.ListView):
     model = Organization
     template_name = 'evalbase/my-orgs.html'
 
@@ -59,27 +64,59 @@ class OrganizationList(generic.ListView):
         rs = rs.union(Organization.objects.filter(owner=self.request.user))
         return rs
 
-class OrganizationDetail(generic.DetailView):
+class OrganizationDetail(EvalBaseLoginReqdMixin, generic.DetailView):
     model = Organization
     template_name = 'evalbase/org-detail.html'
     slug_field = 'shortname'
     slug_url_kwarg = 'shortname'
 
-class OrganizationCreate(generic.edit.CreateView):
+    def get_object(self):
+        try:
+            org = Organization.objects.get(shortname=shortname)
+            if org.member.filter(pk=self.request.user.pk).exists():
+                return rs
+            else:
+                raise PermissionDenied()
+        except:
+            raise PermissionDenied()
+
+class OrganizationCreate(EvalBaseLoginReqdMixin, generic.edit.CreateView):
     model = Organization
     template_name = 'evalbase/org-create.html'
     fields = ['shortname', 'longname']
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        self.conf = Conference.objects.get(shortname=self.kwargs['conf'])
+        context['conf'] = self.conf
+        return context
+    
     def form_valid(self, form):
         form.instance.contact_person = self.request.user
         form.instance.owner = self.request.user
+        confname = self.kwargs['conf']
+        form.instance.conference = Conference.objects.get(shortname=confname)
         form.instance.passphrase = uuid.uuid4()
         return super().form_valid(form)
             
     
-class OrganizationJoin(generic.TemplateView):
-    pass
-class OrganizationEdit(generic.TemplateView):
+class OrganizationJoin(EvalBaseLoginReqdMixin, generic.TemplateView):
+    template_name='evalbase/join.html'
+
+    def get_context_data(self, **kwargs):
+        org = Organization.objects.get(passphrase=self.kwargs['key'])
+        context = super().get_context_data(**kwargs)
+        context['org'] = org
+        context['key'] = self.kwargs['key']
+        return context
+
+    def post(self, request, *args, **kwargs):
+        user = self.request.user
+        org = Organization.objects.get(passphrase=self.kwargs['key'])
+        org.members.add(user)
+        return HttpResponseRedirect(reverse_lazy('home'))
+        
+class OrganizationEdit(EvalBaseLoginReqdMixin, generic.TemplateView):
     pass
 
         

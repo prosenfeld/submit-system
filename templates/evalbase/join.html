@@ -1,0 +1,14 @@
+{% extends "evalbase/base.html" %}
+{% load bootstrap4 %}
+
+{% block title %} Join {% endblock %}
+{% block content %}
+<form method="post">
+  {% csrf_token %}
+    Hi, {{user.first_name}}, Join {{ org.longname }} ({{ org.shortname }}) ?
+  {% buttons %}
+    <button type="submit" class="btn btn-primary">Join</button>
+  {% endbuttons %}
+</form>
+{% endblock %}
+

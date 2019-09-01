@@ -27,10 +27,10 @@ urlpatterns = [
     path('profile/create', views.ProfileCreate.as_view(), name='profile-create'),
     path('profile/edit', views.ProfileEdit.as_view(), name='profile-edit'),
 
-    path('org/my-orgs', views.OrganizationList.as_view(), name='my-orgs'),
+    path('org/list', views.OrganizationList.as_view(), name='my-orgs'),
     path('org/edit/<name>', views.OrganizationEdit.as_view(), name='org-edit'),
-    path('org/create', views.OrganizationCreate.as_view(), name='org-create'),
     path('org/join/<key>', views.OrganizationJoin.as_view(), name='org-join'),
+    path('org/create/<str:conf>', views.OrganizationCreate.as_view(), name='org-create'),
     path('org/<str:shortname>', views.OrganizationDetail.as_view(), name='org-detail'),
 
     path('', views.HomeView.as_view(template_name='evalbase/home.html'), name='home'),
