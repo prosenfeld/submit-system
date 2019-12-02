@@ -68,13 +68,13 @@ class OrganizationDetail(EvalBaseLoginReqdMixin, generic.DetailView):
     model = Organization
     template_name = 'evalbase/org-detail.html'
     slug_field = 'shortname'
-    slug_url_kwarg = 'shortname'
+    slub_url_kwarg = 'shortname'
 
     def get_object(self):
         try:
-            org = Organization.objects.get(shortname=shortname)
-            if org.member.filter(pk=self.request.user.pk).exists():
-                return rs
+            org = Organization.objects.get(shortname=self.kwargs['shortname'])
+            if org.members.filter(pk=self.request.user.pk).exists():
+                return org
             else:
                 raise PermissionDenied()
         except:

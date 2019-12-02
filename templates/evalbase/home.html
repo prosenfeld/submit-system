@@ -15,7 +15,10 @@ You are currently signed up to participate in:<br/>
 <ul>
   {% for org in my_orgs %}
   <li> {{ org.conference.shortname }}
-  (as a member of the {{ org.shortname }} group)</li>
+  (as
+  {% if org.owner == user %} the owner {% else %} a member {% endif %}
+  of the <a href="{% url 'org-detail' org %}">
+  {{ org.shortname }}</a> group)</li>
   {% empty %}
   <li>(none yet!)</li>
   {% endfor %}
