@@ -33,5 +33,8 @@ urlpatterns = [
     path('org/create/<str:conf>', views.OrganizationCreate.as_view(), name='org-create'),
     path('org/<str:shortname>', views.OrganizationDetail.as_view(), name='org-detail'),
 
+    path('conf/<str:conf>', views.ConferenceTasks.as_view(), name='tasks'),
+    path('conf/<str:conf>/<str:task>/submit', views.SubmitTask.as_view(), name='submit'),
+    
     path('', views.HomeView.as_view(template_name='evalbase/home.html'), name='home'),
 ]

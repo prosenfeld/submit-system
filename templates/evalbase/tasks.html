@@ -1,0 +1,16 @@
+{% extends 'evalbase/base.html' %}
+
+{% block title %} Open Tasks -- {{ conf.shortname }} {% endblock %}
+
+{% block content %}
+<ul>
+  {% for task in object_list %}
+  <li>{{ task.longname }}
+  <a href="{% url 'submit' conf.shortname task.shortname %}">(submit)</a>
+  {% if task.required %}
+  <span class="text-danger">required!</span>
+  {% endif %}
+  </li>
+  {% endfor %}
+</ul>
+{% endblock %}

@@ -2,9 +2,19 @@
 
 ** DONE Make an issue list.
 ** DONE Editing the user profile.
-** TODO Sign up a new organization for a conference.
-** TODO Join an organization.
-** TODO Edit organization details.
-** TODO Update home view to include open conferences and my memberships
+** DONE Sign up a new organization for a conference.
+** DONE Join an organization.
+** DONE Edit organization details.
+** DONE Update home view to include open conferences and my memberships
 ** DONE Confirm that new-account-creation works.
+** DONE Render a form based on database entries for a task.
+** TODO Submit a form (like the ad-form)
+Right now, forms are modeled with tasks.  This lets me require a form
+from a group, but not from an individual.  Individual agreements
+should happen when creating or joining an organization in a conf.
+
+** TODO Submit a file
+** TODO Submit a file and complete a meta form
+** DONE Make a task
+
 

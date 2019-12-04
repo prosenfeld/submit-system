@@ -69,6 +69,9 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+            'libraries': {
+                'eb_tags': 'evalbase.templatetags.get_item',
+            }
         },
     },
 ]

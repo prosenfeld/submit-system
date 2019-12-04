@@ -129,3 +129,32 @@ class HomeView(generic.base.TemplateView):
         context['my_orgs'] = Organization.objects.filter(members__pk=self.request.user.pk).filter(conference__complete=False)
         return context
 
+class ConferenceTasks(EvalBaseLoginReqdMixin, generic.ListView):
+    model = Task
+    template_name = 'evalbase/tasks.html'
+    
+    def get_queryset(self):
+        return Task.objects.filter(conference__shortname=self.kwargs['conf']).filter(task_open=True)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['conf'] = Conference.objects.get(shortname=self.kwargs['conf'])
+        return context
+
+class SubmitTask(generic.TemplateView):
+    template_name = 'evalbase/submit.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        task = Task.objects.get(shortname=kwargs['task'], conference__shortname=kwargs['conf'])
+        submitform = SubmitForm.objects.get(task=task)
+        fields = SubmitFormField.objects.filter(submit_form=submitform)
+        choices = {}
+        for field in fields:
+            if field.question_type == SubmitFormField.QuestionType.RADIO or field.question_type == SubmitFormField.QuestionType.CHECKBOX:
+                choices[field.meta_key] = field.choices.split(',')
+        context['task'] = task
+        context['form'] = submitform
+        context['fields'] = fields
+        context['choices'] = choices
+        return context

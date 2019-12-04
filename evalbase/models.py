@@ -71,3 +71,74 @@ class Organization(models.Model):
     def get_absolute_url(self):
         return reverse('org-detail', args=[str(self.shortname)])
 
+class Task(models.Model):
+    shortname = models.CharField(
+        max_length=15)
+    longname = models.CharField(
+        max_length=50)
+    conference = models.ForeignKey(
+        Conference,
+        on_delete=models.PROTECT)
+    required = models.BooleanField()
+    task_open = models.BooleanField()
+    has_file = models.BooleanField()
+
+    def __str__(self):
+        return "/".join([self.conference.shortname, self.shortname])
+
+class SubmitForm(models.Model):
+    task = models.ForeignKey(
+        Task,
+        on_delete=models.PROTECT)
+    header_template = models.CharField(
+        max_length=30)
+
+    def __str__(self):
+        return self.task.shortname
+
+class SubmitFormField(models.Model):
+    class QuestionType(models.IntegerChoices):
+        TEXT = 1
+        NUMBER = 2
+        RADIO = 3
+        CHECKBOX = 4
+        EMAIL = 5
+        COMMENT = 6
+        RUNTAG = 7
+
+    submit_form = models.ForeignKey(
+        SubmitForm,
+        on_delete=models.PROTECT)
+    question = models.CharField(
+        max_length=100)
+    choices = models.CharField(
+        max_length=100,
+        blank=True)
+    meta_key = models.CharField(
+        max_length=15)
+    sequence = models.IntegerField()
+    question_type = models.IntegerField(
+        choices=QuestionType.choices,
+        default=QuestionType.TEXT)
+    def __str__(self):
+        return self.meta_key
+    
+    class Meta:
+        ordering = ['sequence']
+
+class Submission(models.Model):
+    task = models.ForeignKey(
+        Task,
+        on_delete=models.PROTECT)
+    org = models.ForeignKey(
+        Organization,
+        on_delete=models.PROTECT)
+    date = models.DateField(
+        auto_now_add=True)
+
+class SubmitMeta(models.Model):
+    submission = models.ForeignKey(
+        Submission,
+        on_delete=models.PROTECT)
+    key = models.CharField(max_length=15)
+    value = models.CharField(max_length=250)
