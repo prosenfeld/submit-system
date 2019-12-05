@@ -70,7 +70,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
             ],
             'libraries': {
-                'eb_tags': 'evalbase.templatetags.get_item',
+                'eb_tags': 'evalbase.templatetags.eb_tags',
             }
         },
     },

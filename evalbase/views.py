@@ -5,6 +5,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.views import generic
 from django.http import HttpResponseRedirect, Http404
+from django.shortcuts import render
 from django.core.exceptions import PermissionDenied
 from .models import *
 
@@ -141,7 +142,7 @@ class ConferenceTasks(EvalBaseLoginReqdMixin, generic.ListView):
         context['conf'] = Conference.objects.get(shortname=self.kwargs['conf'])
         return context
 
-class SubmitTask(generic.TemplateView):
+class SubmitTask(EvalBaseLoginReqdMixin, generic.TemplateView):
     template_name = 'evalbase/submit.html'
 
     def get_context_data(self, **kwargs):
@@ -153,8 +154,13 @@ class SubmitTask(generic.TemplateView):
         for field in fields:
             if field.question_type == SubmitFormField.QuestionType.RADIO or field.question_type == SubmitFormField.QuestionType.CHECKBOX:
                 choices[field.meta_key] = field.choices.split(',')
+        context['orgs'] = Organization.objects.filter(members__pk=self.request.user.pk).filter(conference__shortname=kwargs['conf'])
         context['task'] = task
         context['form'] = submitform
         context['fields'] = fields
         context['choices'] = choices
         return context
+
+    def post(self, request, *args, **kwargs):
+        form = request.POST
+        return render(request, 'evalbase/foo.html', context={'form': form})

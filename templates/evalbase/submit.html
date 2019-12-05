@@ -6,15 +6,26 @@
 {% block content %}
 
 {% include form.header_template %}
+<p/>
 
-<form>
+<form enctype="multipart/form-data" method="post">
+{% csrf_token %}
+<div class="form-group">
+  <label for="org">I am submitting this form as part of this organization:</label>
+  <select class="form-control" id="org" name="org" required>
+	{% for org in orgs %}
+	<option>{{ org }}</option>
+    {% endfor %}
+  </select>
+</div>
+
 {% for field in fields %}
 <div class="form-group">
   <label for="{{ field.meta_key }}">{{ field.question }}</label>
 
   {% if field.question_type == 3 %}
   <!-- select/radio -->
-  <select class="form-control" id="{{ field.meta_key }}" required>
+  <select class="form-control" id="{{ field.meta_key }}" name="{{ field.meta_key }}" required>
 	{% for choice in choices|get_item:field.meta_key %}
 	<option>{{ choice }}</option>
 	{% endfor %}
@@ -24,29 +35,29 @@
   <!-- checkboxes -->	  
 	{% for choice in choices|get_item:field.meta_key %}
 	<div class="form-check">
-	  <input class="form-check-input" type="checkbox" value="{{ choice }}" id="{{ field.meta_key }}">
+	  <input class="form-check-input" type="checkbox" value="{{ choice }}" name="{{ field.meta_key }}" id="{{ field.meta_key }}">
 	  <label class="form-check-label" for="{{ field.meta_key }}">{{ choice }}</label>
 	</div>
 	{% endfor %}
 	
   {% elif field.question_type == 5 %}
   <!-- email -->
-  <input type="email" class="form-control" id="{{ field.meta_key }}" required>
+  <input type="email" class="form-control" name="{{ field.meta_key }}" id="{{ field.meta_key }}" required>
 
   {% elif field.question_type == 6 %}
   <!-- comment -->
-  <textarea class="form-control" id="{{ field.meta_key }}" required>
+  <textarea class="form-control" name="{{ field.meta_key }}" id="{{ field.meta_key }}" required>
   </textarea>	
 
   {% else %}
-  <input class="form-control" id="{{ field.meta_key }}" required>  
+  <input class="form-control" name="{{ field.meta_key }}" id="{{ field.meta_key }}" required>  
   {% endif %}
 </div>
 {% endfor %}	
    
 {% if task.has_file %}
 <div class="custom-file">
-  <input type="file" class="custom-file-input" id="submitfile" required>
+  <input type="file" class="custom-file-input" name="submitfile" id="submitfile" required>
   <label class="custom-file-label" for="submitfile">Choose file...</label>
 </div>
 {% endif %}
