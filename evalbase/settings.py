@@ -137,6 +137,38 @@ LOGOUT_REDIRECT_URL = 'home'
 
 # Settings for django-bootstrap4
 BOOTSTRAP4 = {
+    "css_url": {
+        "href": "https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css",
+        "integrity": "sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh",
+        "crossorigin": "anonymous",
+    },
+    # The complete URL to the Bootstrap JavaScript file
+    "javascript_url": {
+        "url": "https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js",
+        "integrity": "sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6",
+        "crossorigin": "anonymous",
+    },
+    # The URL to the jQuery JavaScript file (full)
+    "jquery_url": {
+        "url": "https://code.jquery.com/jquery-3.4.1.min.js",
+        "integrity": "sha384-mlceH9HlqLp7GMKHrj5Ara1+LvdTZVMx4S1U43/NxCvAkzIo8WJ0FE7duLel3wVo",
+        "crossorigin": "anonymous",
+    },
+
+    # The URL to the jQuery JavaScript file (slim)
+    "jquery_slim_url": {
+        "url": "https://code.jquery.com/jquery-3.4.1.slim.min.js",
+        "integrity": "sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n",
+        "crossorigin": "anonymous",
+    },
+
+    # The URL to the Popper.js JavaScript file (slim)
+    "popper_url": {
+        "url": "https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js",
+        "integrity": "sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo",
+        "crossorigin": "anonymous",
+    },
+
     "error_css_class": "bootstrap4-error",
     "required_css_class": "bootstrap4-required",
     "javascript_in_head": True,
