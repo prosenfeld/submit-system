@@ -151,10 +151,13 @@ class SubmitTask(EvalBaseLoginReqdMixin, generic.TemplateView):
         submitform = SubmitForm.objects.get(task=task)
         fields = SubmitFormField.objects.filter(submit_form=submitform)
         choices = {}
+
         for field in fields:
             if field.question_type == SubmitFormField.QuestionType.RADIO or field.question_type == SubmitFormField.QuestionType.CHECKBOX:
                 choices[field.meta_key] = field.choices.split(',')
+
         context['orgs'] = Organization.objects.filter(members__pk=self.request.user.pk).filter(conference__shortname=kwargs['conf'])
+        context['conf'] = Conference.objects.get(shortname=kwargs['conf'])
         context['task'] = task
         context['form'] = submitform
         context['fields'] = fields

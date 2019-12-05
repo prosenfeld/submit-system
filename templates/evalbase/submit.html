@@ -10,6 +10,9 @@
 
 <form enctype="multipart/form-data" method="post">
 {% csrf_token %}
+<input type="hidden" name="conf" value="{{ conf.shortname }}"/>
+<input type="hidden" name="task" value="{{ task.shortname }}"/>
+
 <div class="form-group">
   <label for="org">I am submitting this form as part of this organization:</label>
   <select class="form-control" id="org" name="org" required>
@@ -35,8 +38,9 @@
   <!-- checkboxes -->	  
 	{% for choice in choices|get_item:field.meta_key %}
 	<div class="form-check">
-	  <input class="form-check-input" type="checkbox" value="{{ choice }}" name="{{ field.meta_key }}" id="{{ field.meta_key }}">
-	  <label class="form-check-label" for="{{ field.meta_key }}">{{ choice }}</label>
+	  <label for="{{ field.meta_key }}_{{ choice }}" class="form-check-label">
+	  <input class="form-check-input" type="checkbox" value="{{ choice }}" name="{{ field.meta_key }}" id="{{ field.meta_key }}_{{ choice }}">
+	  {{ choice }}</label>
 	</div>
 	{% endfor %}
 	
@@ -46,8 +50,7 @@
 
   {% elif field.question_type == 6 %}
   <!-- comment -->
-  <textarea class="form-control" name="{{ field.meta_key }}" id="{{ field.meta_key }}" required>
-  </textarea>	
+  <textarea class="form-control" name="{{ field.meta_key }}" id="{{ field.meta_key }}" required></textarea>	
 
   {% else %}
   <input class="form-control" name="{{ field.meta_key }}" id="{{ field.meta_key }}" required>  
