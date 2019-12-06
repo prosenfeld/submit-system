@@ -8,6 +8,7 @@ from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render
 from django.core.exceptions import PermissionDenied
 from .models import *
+from .forms import *
 
 class SignUp(generic.edit.CreateView):
     form_class = UserCreationForm
@@ -149,19 +150,13 @@ class SubmitTask(EvalBaseLoginReqdMixin, generic.TemplateView):
         context = super().get_context_data(**kwargs)
         task = Task.objects.get(shortname=kwargs['task'], conference__shortname=kwargs['conf'])
         submitform = SubmitForm.objects.get(task=task)
-        fields = SubmitFormField.objects.filter(submit_form=submitform)
-        choices = {}
-
-        for field in fields:
-            if field.question_type == SubmitFormField.QuestionType.RADIO or field.question_type == SubmitFormField.QuestionType.CHECKBOX:
-                choices[field.meta_key] = field.choices.split(',')
 
         context['orgs'] = Organization.objects.filter(members__pk=self.request.user.pk).filter(conference__shortname=kwargs['conf'])
         context['conf'] = Conference.objects.get(shortname=kwargs['conf'])
         context['task'] = task
         context['form'] = submitform
-        context['fields'] = fields
-        context['choices'] = choices
+        context['gen_form'] = SubmitFormForm(submitform, initial={'conf': kwargs['conf'],
+                                                                  'task': kwargs['task']})
         return context
 
     def post(self, request, *args, **kwargs):
