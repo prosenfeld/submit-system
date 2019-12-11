@@ -8,7 +8,7 @@
 ** DONE Update home view to include open conferences and my memberships
 ** DONE Confirm that new-account-creation works.
 ** DONE Render a form based on database entries for a task.
-** TODO Submit a form (like the ad-form)
+** DONE Submit a form (like the ad-form)
 Right now, forms are modeled with tasks.  This lets me require a form
 from a group, but not from an individual.  Individual agreements
 should happen when creating or joining an organization in a conf.

@@ -5,7 +5,7 @@ from django.urls import reverse, reverse_lazy
 class UserProfile(models.Model):
     user = models.OneToOneField(
         User,
-        on_delete=models.PROTECT)
+        on_delete=models.CASCADE)
     street_address = models.CharField(
         max_length=150)
     city_state = models.CharField(
@@ -33,7 +33,7 @@ class Conference(models.Model):
     tech_contact = models.EmailField()
     admin_contact = models.EmailField()
     complete = models.BooleanField()
-    agreements = models.ManyToManyField('Agreement')
+    agreements = models.ManyToManyField('Agreement', blank=True)
     results_root = models.CharField(
         max_length=15,
         default='{0}/{1}'.format(shortname, 'runs'))
@@ -109,7 +109,8 @@ class SubmitForm(models.Model):
         Task,
         on_delete=models.PROTECT)
     header_template = models.CharField(
-        max_length=30)
+        max_length=30,
+        blank=True)
 
     def __str__(self):
         return self.task.shortname
@@ -125,11 +126,11 @@ class SubmitFormField(models.Model):
         EMAIL = 5
         COMMENT = 6
         RUNTAG = 7
-        ORG = 8
 
     submit_form = models.ForeignKey(
         SubmitForm,
-        on_delete=models.PROTECT)
+        null=True,
+        on_delete=models.SET_NULL)
     question = models.CharField(
         max_length=100)
     choices = models.CharField(

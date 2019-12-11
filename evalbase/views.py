@@ -148,15 +148,18 @@ class SubmitTask(EvalBaseLoginReqdMixin, generic.TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        task = Task.objects.get(shortname=kwargs['task'], conference__shortname=kwargs['conf'])
+        conf = Conference.objects.get(shortname=kwargs['conf'])
+        task = Task.objects.get(shortname=kwargs['task'], conference=conf)
         submitform = SubmitForm.objects.get(task=task)
 
-        context['orgs'] = Organization.objects.filter(members__pk=self.request.user.pk).filter(conference__shortname=kwargs['conf'])
-        context['conf'] = Conference.objects.get(shortname=kwargs['conf'])
+        context['conf'] = conf
         context['task'] = task
         context['form'] = submitform
-        context['gen_form'] = SubmitFormForm(submitform, initial={'conf': kwargs['conf'],
-                                                                  'task': kwargs['task']})
+        context['user'] = self.request.user
+        context['orgs'] = Organization.objects.filter(members=self.request.user).filter(conference=conf)
+        context['gen_form'] = SubmitFormForm(context,
+                                             initial={'conf': kwargs['conf'],
+                                                      'task': kwargs['task']})
         return context
 
     def post(self, request, *args, **kwargs):

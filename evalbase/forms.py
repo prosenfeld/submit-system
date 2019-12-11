@@ -5,9 +5,25 @@ class SubmitFormForm(forms.Form):
     conf = forms.CharField(widget=forms.HiddenInput())
     task = forms.CharField(widget=forms.HiddenInput())
 
-    def __init__(self, submit_form, *args, **kwargs):
+    def __init__(self, context, *args, **kwargs):
         super(SubmitFormForm, self).__init__(*args, **kwargs)
-        fields = SubmitFormField.objects.filter(submit_form=submit_form).order_by('sequence')
+
+        # Set up standard fields
+        self.fields['user'] = forms.CharField(label='User name',
+                                              widget=forms.TextInput(attrs={'value': context['user'].username,
+                                                                            'readonly': 'readonly',
+                                                                            'class': 'form-control-plaintext'}))
+        self.fields['email'] = forms.EmailField(label='Email',
+                                                widget=forms.EmailInput(attrs={'value': context['user'].email,
+                                                                               'readonly': 'readonly',
+                                                                               'class': 'form-control-plaintext'}))
+        org_choices = list(map(lambda x: (x.shortname, x.longname), context['orgs']))
+        self.fields['org'] = forms.ChoiceField(label='Organization', choices=org_choices)
+
+        self.fields['runfile'] = forms.FileField(label='Submission file')
+        
+        # Set up custom fields
+        fields = SubmitFormField.objects.filter(submit_form=context['form']).order_by('sequence')
         for field in fields:
             if field.question_type == SubmitFormField.QuestionType.TEXT:
                 self.fields[field.meta_key] = forms.CharField(label=field.question)
@@ -34,9 +50,6 @@ class SubmitFormForm(forms.Form):
             elif field.question_type == SubmitFormField.QuestionType.RUNTAG:
                 self.fields[field.meta_key] = forms.CharField(label=field.question,
                                                               validators=[check_runtag])
-
-        if 'has_file' in kwargs and kwargs['has_file'] == True:
-            self.fields['run'] = forms.FileField(label="Submission file")
 
     def check_runtag(value):
         pass

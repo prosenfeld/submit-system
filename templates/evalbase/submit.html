@@ -5,8 +5,10 @@
 
 {% block content %}
 
+{% if form.header_template %}
 {% include form.header_template %}
 <p/>
+{% endif %}
 
 <form enctype="multipart/form-data" method="post">
 {% csrf_token %}
