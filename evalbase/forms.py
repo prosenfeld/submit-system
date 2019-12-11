@@ -51,6 +51,10 @@ class SubmitFormForm(forms.Form):
                 self.fields[field.meta_key] = forms.CharField(label=field.question,
                                                               validators=[check_runtag])
 
+            elif field.question_type == SubmitFormField.QuestionType.YESNO:
+                self.fields[field.meta_key] = forms.ChoiceField(label=field.question,
+                                                                choices=[('yes', 'Yes'), ('no', 'No')])
+
     def check_runtag(value):
         pass
 

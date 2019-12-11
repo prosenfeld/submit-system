@@ -107,7 +107,7 @@ class SubmitForm(models.Model):
     """A SubmitForm is a form for submitting something to a Task."""
     task = models.ForeignKey(
         Task,
-        on_delete=models.PROTECT)
+        on_delete=models.CASCADE)
     header_template = models.CharField(
         max_length=30,
         blank=True)
@@ -126,11 +126,11 @@ class SubmitFormField(models.Model):
         EMAIL = 5
         COMMENT = 6
         RUNTAG = 7
+        YESNO = 8
 
     submit_form = models.ForeignKey(
         SubmitForm,
-        null=True,
-        on_delete=models.SET_NULL)
+        on_delete=models.CASCADE)
     question = models.CharField(
         max_length=100)
     choices = models.CharField(
