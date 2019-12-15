@@ -1,4 +1,6 @@
 from django import forms
+from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
 from .models import *
 
 class SubmitFormForm(forms.Form):
@@ -49,15 +51,18 @@ class SubmitFormForm(forms.Form):
 
             elif field.question_type == SubmitFormField.QuestionType.RUNTAG:
                 self.fields[field.meta_key] = forms.CharField(label=field.question,
-                                                              validators=[check_runtag])
+                                                              validators=[self.make_runtag_checker(context['task'], field.meta_key)])
 
             elif field.question_type == SubmitFormField.QuestionType.YESNO:
                 self.fields[field.meta_key] = forms.ChoiceField(label=field.question,
                                                                 choices=[('yes', 'Yes'), ('no', 'No')])
 
-    def check_runtag(value):
-        pass
-
-
-                
-            
+    def make_runtag_checker(self, task, field_meta):
+        def thunk(value):
+            tags = SubmitFormField.objects.filter(task=task).filter(meta_key=field_meta).filter(value=value)
+            if tags:
+                raise ValidationError(
+                    _('A submission with %(meta_key) %(runtag) has already been submitted.'),
+                    params={'meta_key': meta_key,
+                            'runtag': value})
+        return thunk
