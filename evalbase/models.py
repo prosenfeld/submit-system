@@ -149,10 +149,10 @@ class SubmitFormField(models.Model):
         ordering = ['sequence']
 
 def get_submission_path(submission, filename):
-    return '{0}/{1}/{2}/{3}'.format(task.conference.results_root,
-                                    task.shortname,
-                                    org.shortname,
-                                    filename)
+    return '{0}/{1}/{2}/{3}'.format(submission.task.conference.results_root,
+                                    submission.task.shortname,
+                                    submission.org.shortname,
+                                    submission.file.name)
 
 class Submission(models.Model):
     """A Submission is something that got submitted to a Task via a SubmitForm."""

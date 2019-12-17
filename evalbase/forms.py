@@ -4,65 +4,65 @@ from django.utils.translation import gettext_lazy as _
 from .models import *
 
 class SubmitFormForm(forms.Form):
-    conf = forms.CharField(widget=forms.HiddenInput())
-    task = forms.CharField(widget=forms.HiddenInput())
-
-    def __init__(self, context, *args, **kwargs):
-        super(SubmitFormForm, self).__init__(*args, **kwargs)
-
+    def get_form_class(context):
+        fields = {}
         # Set up standard fields
-        self.fields['user'] = forms.CharField(label='User name',
-                                              widget=forms.TextInput(attrs={'value': context['user'].username,
-                                                                            'readonly': 'readonly',
-                                                                            'class': 'form-control-plaintext'}))
-        self.fields['email'] = forms.EmailField(label='Email',
-                                                widget=forms.EmailInput(attrs={'value': context['user'].email,
-                                                                               'readonly': 'readonly',
-                                                                               'class': 'form-control-plaintext'}))
-        org_choices = list(map(lambda x: (x.shortname, x.longname), context['orgs']))
-        self.fields['org'] = forms.ChoiceField(label='Organization', choices=org_choices)
+        fields['conf'] = forms.CharField(widget=forms.HiddenInput(), initial=context['conf'].shortname)
+        fields['task'] = forms.CharField(widget=forms.HiddenInput(), initial=context['task'].shortname)
 
-        self.fields['runfile'] = forms.FileField(label='Submission file')
+        fields['user'] = forms.CharField(label='User name',
+                                         widget=forms.TextInput(attrs={'value': context['user'].username,
+                                                                       'readonly': 'readonly',
+                                                                       'class': 'form-control-plaintext'}))
+        fields['email'] = forms.EmailField(label='Email',
+                                           widget=forms.EmailInput(attrs={'value': context['user'].email,
+                                                                          'readonly': 'readonly',
+                                                                          'class': 'form-control-plaintext'}))
+        org_choices = list(map(lambda x: (x.shortname, x.longname), context['orgs']))
+        fields['org'] = forms.ChoiceField(label='Organization', choices=org_choices)
+
+        fields['runfile'] = forms.FileField(label='Submission file')
         
         # Set up custom fields
-        fields = SubmitFormField.objects.filter(submit_form=context['form']).order_by('sequence')
-        for field in fields:
+        other_fields = SubmitFormField.objects.filter(submit_form=context['form']).order_by('sequence')
+        for field in other_fields:
             if field.question_type == SubmitFormField.QuestionType.TEXT:
-                self.fields[field.meta_key] = forms.CharField(label=field.question)
+                fields[field.meta_key] = forms.CharField(label=field.question)
 
             elif field.question_type == SubmitFormField.QuestionType.NUMBER:
-                self.fields[field.meta_key] = forms.IntegerField(label=field.question)
+                fields[field.meta_key] = forms.IntegerField(label=field.question)
 
             elif field.question_type == SubmitFormField.QuestionType.RADIO:
                 choices = list(map(lambda x: (x,x), field.choices.split(',')))
-                self.fields[field.meta_key] = forms.ChoiceField(label=field.question, choices=choices)
+                fields[field.meta_key] = forms.ChoiceField(label=field.question, choices=choices)
 
             elif field.question_type == SubmitFormField.QuestionType.CHECKBOX:
                 choices = list(map(lambda x: (x,x), field.choices.split(',')))
-                self.fields[field.meta_key] = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple,
-                                                                        choices=choices)
+                fields[field.meta_key] = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple,
+                                                                   choices=choices)
 
             elif field.question_type == SubmitFormField.QuestionType.EMAIL:
-                self.fields[field.meta_key] = forms.EmailField(label=field.question)
+                fields[field.meta_key] = forms.EmailField(label=field.question)
 
             elif field.question_type == SubmitFormField.QuestionType.COMMENT:
-                self.fields[field.meta_key] = forms.CharField(label=field.question,
-                                                              widget=forms.Textarea)
+                fields[field.meta_key] = forms.CharField(label=field.question,
+                                                         widget=forms.Textarea)
 
             elif field.question_type == SubmitFormField.QuestionType.RUNTAG:
-                self.fields[field.meta_key] = forms.CharField(label=field.question,
-                                                              validators=[self.make_runtag_checker(context['task'], field.meta_key)])
+                fields[field.meta_key] = forms.CharField(label=field.question,
+                                                         validators=[SubmitFormForm.make_runtag_checker(context, field.meta_key)])
 
             elif field.question_type == SubmitFormField.QuestionType.YESNO:
-                self.fields[field.meta_key] = forms.ChoiceField(label=field.question,
-                                                                choices=[('yes', 'Yes'), ('no', 'No')])
+                fields[field.meta_key] = forms.ChoiceField(label=field.question,
+                                                           choices=[('yes', 'Yes'), ('no', 'No')])
+        return type('SubmitFormForm', (forms.Form,), fields)
 
-    def make_runtag_checker(self, task, field_meta):
+    def make_runtag_checker(context, field_meta):
         def thunk(value):
-            tags = SubmitFormField.objects.filter(task=task).filter(meta_key=field_meta).filter(value=value)
+            tags = SubmitMeta.objects.filter(submission__task=context['task']).filter(key=field_meta).filter(value=value)
             if tags:
                 raise ValidationError(
                     _('A submission with %(meta_key) %(runtag) has already been submitted.'),
-                    params={'meta_key': meta_key,
+                    params={'meta_key': field_meta,
                             'runtag': value})
         return thunk
