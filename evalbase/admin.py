@@ -27,3 +27,10 @@ class SubmitFormFieldInline(admin.TabularInline):
 @admin.register(SubmitForm)
 class SubmitFormAdmin(admin.ModelAdmin):
     inlines = [SubmitFormFieldInline]
+
+class SubmitMetaInline(admin.TabularInline):
+    model = SubmitMeta
+
+@admin.register(Submission)
+class SubmissionAdmin(admin.ModelAdmin):
+    inlines = [SubmitMetaInline]
