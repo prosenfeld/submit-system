@@ -21,6 +21,9 @@ class SubmitFormForm(forms.Form):
         org_choices = list(map(lambda x: (x.shortname, x.longname), context['orgs']))
         fields['org'] = forms.ChoiceField(label='Organization', choices=org_choices)
 
+        fields['runtag'] = forms.CharField(label='runtag',
+                                           validators=[SubmitFormForm.make_runtag_checker(context)])
+        
         fields['runfile'] = forms.FileField(label='Submission file')
         
         # Set up custom fields
@@ -48,21 +51,16 @@ class SubmitFormForm(forms.Form):
                 fields[field.meta_key] = forms.CharField(label=field.question,
                                                          widget=forms.Textarea)
 
-            elif field.question_type == SubmitFormField.QuestionType.RUNTAG:
-                fields[field.meta_key] = forms.CharField(label=field.question,
-                                                         validators=[SubmitFormForm.make_runtag_checker(context, field.meta_key)])
-
             elif field.question_type == SubmitFormField.QuestionType.YESNO:
                 fields[field.meta_key] = forms.ChoiceField(label=field.question,
                                                            choices=[('yes', 'Yes'), ('no', 'No')])
         return type('SubmitFormForm', (forms.Form,), fields)
 
-    def make_runtag_checker(context, field_meta):
+    def make_runtag_checker(context):
         def thunk(value):
-            tags = SubmitMeta.objects.filter(submission__task=context['task']).filter(key=field_meta).filter(value=value)
+            tags = SubmitMeta.objects.filter(submission__task=context['task']).filter(key='runtag').filter(value=value)
             if tags:
                 raise ValidationError(
-                    _('A submission with %(meta_key) %(runtag) has already been submitted.'),
-                    params={'meta_key': field_meta,
-                            'runtag': value})
+                    _('A submission with runtag %(runtag) has already been submitted.'),
+                    params={'runtag': value})
         return thunk

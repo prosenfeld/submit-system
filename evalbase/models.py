@@ -149,13 +149,14 @@ class SubmitFormField(models.Model):
         ordering = ['sequence']
 
 def get_submission_path(submission, filename):
-    return '{0}/{1}/{2}/{3}'.format(submission.task.conference.results_root,
-                                    submission.task.shortname,
-                                    submission.org.shortname,
-                                    submission.file.name)
+    return 'submissions/{0}/{1}/results/{2}/{3}'.format(submission.task.conference.results_root,
+                                                        submission.task.shortname,
+                                                        submission.runtag,
+                                                        submission.file.name)
 
 class Submission(models.Model):
     """A Submission is something that got submitted to a Task via a SubmitForm."""
+    runtag = models.CharField(max_length=15)
     task = models.ForeignKey(
         Task,
         on_delete=models.PROTECT)
@@ -174,6 +175,6 @@ class SubmitMeta(models.Model):
     """SubmitMetas are values for SubmitFormFields aside from task, org, submitter, file and date."""
     submission = models.ForeignKey(
         Submission,
-        on_delete=models.PROTECT)
+        on_delete=models.CASCADE)
     key = models.CharField(max_length=15)
     value = models.CharField(max_length=250)

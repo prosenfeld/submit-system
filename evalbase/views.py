@@ -157,11 +157,30 @@ class SubmitTask(EvalBaseLoginReqdMixin, generic.TemplateView):
         context['form'] = submitform
         context['user'] = self.request.user
         context['orgs'] = Organization.objects.filter(members=self.request.user).filter(conference=conf)
-        context['gen_form'] = SubmitFormForm(context,
-                                             initial={'conf': kwargs['conf'],
-                                                      'task': kwargs['task']})
+
+        form_class = SubmitFormForm.get_form_class(context)
+        sff = form_class()
+        context['gen_form'] = sff
         return context
 
     def post(self, request, *args, **kwargs):
-        form = request.POST
-        return render(request, 'evalbase/foo.html', context={'form': form})
+        context = self.get_context_data(**kwargs)
+        form_class = SubmitFormForm.get_form_class(context)
+        form = form_class(request.POST, request.FILES)
+        if form.is_valid():
+            stuff = form.cleaned_data
+            sub = Submission(task=context['task'],
+                             org=Organization.objects.filter(conference=context['conf']).filter(shortname=stuff['org'])[0],
+                             submitted_by=request.user,
+                             runtag=stuff['runtag'],
+                             file=stuff['runfile'])
+            sub.save()
+
+            custom_fields = SubmitFormField.objects.filter(submit_form=context['form'])
+            for field in custom_fields:
+                smeta = SubmitMeta(submission=sub, key=field.meta_key, value=stuff[field.meta_key])
+                smeta.save()
+            return render(request, 'evalbase/foo.html', context={'form': stuff})
+        else:
+            context['gen_form'] = form
+            return render(request, 'evalbase/submit.html', context=context)
