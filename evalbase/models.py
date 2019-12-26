@@ -86,7 +86,7 @@ class Agreement(models.Model):
     template = models.CharField(max_length=30)
     signed_by = models.ForeignKey(
         Signature,
-        on_delete=models.PROTECT)
+        on_delete=models.CASCADE)
 
 class Task(models.Model):
     """A Task is like a TREC track, a thing in a Conference that people submit things to."""
