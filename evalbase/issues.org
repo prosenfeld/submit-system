@@ -13,8 +13,14 @@ Right now, forms are modeled with tasks.  This lets me require a form
 from a group, but not from an individual.  Individual agreements
 should happen when creating or joining an organization in a conf.
 
-** TODO Submit a file
-** TODO Submit a file and complete a meta form
+** DONE Submit a file
+** DONE Submit a file and complete a meta form
 ** DONE Make a task
+** TODO View my submissions
+** TODO submission validation
+** TODO View submission validation status
+** TODO Sign an agreement
+** TODO View agreements signed and unsigned
+
 
 
