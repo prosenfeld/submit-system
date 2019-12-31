@@ -188,3 +188,15 @@ class SubmitTask(EvalBaseLoginReqdMixin, generic.TemplateView):
         else:
             context['gen_form'] = form
             return render(request, 'evalbase/submit.html', context=context)
+
+class Submissions(EvalBaseLoginReqdMixin, generic.TemplateView):
+    template_name = 'evalbase/run.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        run = Submission.objects.filter(runtag=self.kwargs['runtag']).filter(task__shortname=self.kwargs['task']).filter(task__conference__shortname=self.kwargs['conf'])[0]
+        if run.submitted_by != self.request.user:
+            throw(PermissionDenied)
+        context['submission'] = run
+        context['metas'] = SubmitMeta.objects.filter(submission=context['submission'])
+        return context
