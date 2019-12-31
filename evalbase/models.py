@@ -170,11 +170,16 @@ class Submission(models.Model):
         auto_now_add=True)
     file = models.FileField(
         upload_to=get_submission_path)
+    is_validated = models.BooleanField()
+    has_evaluation = models.BooleanField()
 
 class SubmitMeta(models.Model):
     """SubmitMetas are values for SubmitFormFields aside from task, org, submitter, file and date."""
     submission = models.ForeignKey(
         Submission,
         on_delete=models.CASCADE)
+    form_field = models.ForeignKey(
+        SubmitFormField,
+        on_delete=models.PROTECT)
     key = models.CharField(max_length=15)
     value = models.CharField(max_length=250)
