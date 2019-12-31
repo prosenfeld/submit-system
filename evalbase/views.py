@@ -199,4 +199,8 @@ class Submissions(EvalBaseLoginReqdMixin, generic.TemplateView):
             throw(PermissionDenied)
         context['submission'] = run
         context['metas'] = SubmitMeta.objects.filter(submission=context['submission'])
+        field_descs = {}
+        for meta in context['metas']:
+            field_descs[meta.key] = meta.form_field.question
+        context['fields'] = field_descs
         return context

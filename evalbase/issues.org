@@ -17,7 +17,7 @@ should happen when creating or joining an organization in a conf.
 ** DONE Submit a file and complete a meta form
 ** DONE Make a task
 ** DONE View my submissions
-** TODO review submission meta-data details
+** DONE review submission meta-data details
 ** TODO update/revise, or delete (?) a submission
 ** TODO submission validation
 ** TODO View submission validation status

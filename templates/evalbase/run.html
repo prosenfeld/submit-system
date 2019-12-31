@@ -1,4 +1,6 @@
 {% extends 'evalbase/base.html' %}
+{% load eb_tags %}
+
 {% block title %} {{ submission.runtag }} {% endblock %}
 
 {% block content %}
@@ -14,7 +16,7 @@
 
 <ul>
   {% for m in metas %}
-  <li> {{ m.key }} : {{ m.value }} </li>
+  <li> {{ fields|get_item:m.key }} : {{ m.value }} </li>
   {% endfor %}
 </ul>
 {% endblock %}
