@@ -1,0 +1,20 @@
+{% extends 'evalbase/base.html' %}
+{% block title %} {{ submission.runtag }} {% endblock %}
+
+{% block content %}
+
+<ul>
+  <li> Submitted by {{ submission.submitted_by }} </li>
+  <li> Organization: {{ submission.org }} </li>
+  <li> Date: {{ submission.date }} </li>
+  <li> Task: {{ submission.task.shortname }} </li>
+</ul>
+
+<h2> Run metadata </h2>
+
+<ul>
+  {% for m in metas %}
+  <li> {{ m.key }} : {{ m.value }} </li>
+  {% endfor %}
+</ul>
+{% endblock %}
