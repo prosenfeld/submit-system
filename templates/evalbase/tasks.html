@@ -13,4 +13,13 @@
   </li>
   {% endfor %}
 </ul>
+
+{% if myruns %}
+<h2> Runs submitted </h2>
+<ul>
+  {% for run in myruns %}
+  <li> {{ run.runtag }} : {{ run.task.shortname }}; on {{ run.date }}; by {{ run.submitted_by }} </li>
+  {% endfor %}
+</ul>
+{% endif %}
 {% endblock %}

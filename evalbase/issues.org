@@ -16,11 +16,14 @@ should happen when creating or joining an organization in a conf.
 ** DONE Submit a file
 ** DONE Submit a file and complete a meta form
 ** DONE Make a task
-** TODO View my submissions
+** DONE View my submissions
+** TODO review submission meta-data details
+** TODO update/revise, or delete (?) a submission
 ** TODO submission validation
 ** TODO View submission validation status
 ** TODO Sign an agreement
 ** TODO View agreements signed and unsigned
+** TODO make an activity log more application-specific than "recent changes"
 
 
 

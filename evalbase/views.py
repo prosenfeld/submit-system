@@ -140,7 +140,11 @@ class ConferenceTasks(EvalBaseLoginReqdMixin, generic.ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['conf'] = Conference.objects.get(shortname=self.kwargs['conf'])
+        conf = Conference.objects.get(shortname=self.kwargs['conf'])
+        orgs = Organization.objects.filter(members__pk=self.request.user.pk).filter(conference=conf)
+        myruns = Submission.objects.filter(task__conference=conf).filter(org__in=orgs).order_by('task')
+        context['conf'] = conf
+        context['myruns'] = myruns
         return context
 
 class SubmitTask(EvalBaseLoginReqdMixin, generic.TemplateView):
