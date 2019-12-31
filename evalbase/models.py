@@ -178,8 +178,8 @@ class SubmitMeta(models.Model):
     submission = models.ForeignKey(
         Submission,
         on_delete=models.CASCADE)
-    form_field = models.ForeignKey(
-        SubmitFormField,
+    form = models.ForeignKey(
+        SubmitForm,
         on_delete=models.PROTECT)
     key = models.CharField(max_length=15)
     value = models.CharField(max_length=250)
