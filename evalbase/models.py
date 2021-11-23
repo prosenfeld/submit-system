@@ -75,19 +75,20 @@ class Organization(models.Model):
     def get_absolute_url(self):
         return reverse('org-detail', args=[str(self.shortname)])
 
-class Signature(models.Model):
-    """Signature is a signature on an agreement."""
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    date = models.DateField(auto_now_add=True)
-        
 class Agreement(models.Model):
     """An Agreement is something somebody has to sign.  Usually for Conferences."""
     name = models.CharField(max_length=150)
     template = models.CharField(max_length=30)
-    signed_by = models.ForeignKey(
-        Signature,
-        on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.name
+
+class Signature(models.Model):
+    """Signature is a signature on an agreement."""
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    date = models.DateField(auto_now_add=True)
+    agreement = models.ForeignKey(Agreement, on_delete=models.CASCADE)
+        
 class Task(models.Model):
     """A Task is like a TREC track, a thing in a Conference that people submit things to."""
     shortname = models.CharField(

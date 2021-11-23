@@ -17,7 +17,7 @@ class SignUp(generic.edit.CreateView):
 
 class EvalBaseLoginReqdMixin(LoginRequiredMixin):
     login_url = reverse_lazy('login')
-    
+
 class ProfileDetail(EvalBaseLoginReqdMixin, generic.detail.DetailView):
     model = UserProfile
     template_name = 'evalbase/profile_view.html'
@@ -38,7 +38,7 @@ class ProfileCreate(EvalBaseLoginReqdMixin, generic.edit.CreateView):
     model = UserProfile
     fields = ['street_address', 'city_state', 'country', 'postal_code']
     template_name = 'evalbase/profile_form.html'
-    
+
     # The profile is always for the current user.
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -92,7 +92,7 @@ class OrganizationCreate(EvalBaseLoginReqdMixin, generic.edit.CreateView):
         self.conf = Conference.objects.get(shortname=self.kwargs['conf'])
         context['conf'] = self.conf
         return context
-    
+
     def form_valid(self, form):
         form.instance.contact_person = self.request.user
         form.instance.owner = self.request.user
@@ -100,8 +100,8 @@ class OrganizationCreate(EvalBaseLoginReqdMixin, generic.edit.CreateView):
         form.instance.conference = Conference.objects.get(shortname=confname)
         form.instance.passphrase = uuid.uuid4()
         return super().form_valid(form)
-            
-    
+
+
 class OrganizationJoin(EvalBaseLoginReqdMixin, generic.TemplateView):
     template_name='evalbase/join.html'
 
@@ -116,12 +116,23 @@ class OrganizationJoin(EvalBaseLoginReqdMixin, generic.TemplateView):
         user = self.request.user
         org = Organization.objects.get(passphrase=self.kwargs['key'])
         org.members.add(user)
-        return HttpResponseRedirect(reverse_lazy('home'))
-        
+        if org.conference.agreements.exists():
+            return HttpResponseRedirect(reverse_lazy('agree'), kwargs={'org':org, 'conf': org.conference})
+        else:
+            return HttpResponseRedirect(reverse_lazy('home'))
+
 class OrganizationEdit(EvalBaseLoginReqdMixin, generic.TemplateView):
     pass
 
-        
+class ListAgreements(EvalBaseLoginReqdMixin, generic.ListView):
+    model=Agreement
+    template_name='evalbase/agreements.html'
+
+    def get_queryset(self):
+        conf = Conference.objects.get(shortname=self.kwargs['conf'])
+        return conf.agreements.all()
+
+
 class HomeView(generic.base.TemplateView):
     template_name = 'evalbase/home.html'
 
@@ -134,7 +145,7 @@ class HomeView(generic.base.TemplateView):
 class ConferenceTasks(EvalBaseLoginReqdMixin, generic.ListView):
     model = Task
     template_name = 'evalbase/tasks.html'
-    
+
     def get_queryset(self):
         return Task.objects.filter(conference__shortname=self.kwargs['conf']).filter(task_open=True)
 
@@ -204,3 +215,4 @@ class Submissions(EvalBaseLoginReqdMixin, generic.TemplateView):
             field_descs[meta.key] = meta.form_field.question
         context['fields'] = field_descs
         return context
+

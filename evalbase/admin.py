@@ -17,7 +17,7 @@ class ConferenxeAdmin(admin.ModelAdmin):
 class OrganizationAdmin(admin.ModelAdmin):
     readonly_fields = [ 'passphrase' ]
 
-
+admin.site.register(Agreement)    
     
 class SubmitFormFieldInline(admin.TabularInline):
     model = SubmitFormField

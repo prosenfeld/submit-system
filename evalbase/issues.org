@@ -9,9 +9,9 @@
 ** DONE Confirm that new-account-creation works.
 ** DONE Render a form based on database entries for a task.
 ** DONE Submit a form (like the ad-form)
-Right now, forms are modeled with tasks.  This lets me require a form
-from a group, but not from an individual.  Individual agreements
-should happen when creating or joining an organization in a conf.
+    - Right now, forms are modeled with tasks.  This lets me require a form
+      from a group, but not from an individual.  Individual agreements
+      should happen when creating or joining an organization in a conf.
 
 ** DONE Submit a file
 ** DONE Submit a file and complete a meta form
@@ -24,6 +24,8 @@ should happen when creating or joining an organization in a conf.
 ** TODO Sign an agreement
 ** TODO View agreements signed and unsigned
 ** TODO make an activity log more application-specific than "recent changes"
-
+** TODO BUG: Signup doesn't take a display name or email address
+** TODO BUG: Logging in with no profile should take you to profile creation
+** TODO BUG: Well, creating a new account should also take the profile too
 
 

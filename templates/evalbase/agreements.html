@@ -1,0 +1,12 @@
+{% extends 'evalbase/base.html' %}
+
+{% block title %} Agreements for {{ conf.shortname }} {% endblock %}
+
+{% block content %}
+
+<ul>
+  {% for ag in object_list %}
+  <li> {{ ag.name }} </li>
+  {% endfor %}
+</ul>
+{% endblock %}
