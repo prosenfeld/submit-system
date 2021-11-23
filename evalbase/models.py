@@ -1,11 +1,14 @@
 from django.db import models
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.urls import reverse, reverse_lazy
 
 class UserProfile(models.Model):
     user = models.OneToOneField(
-        User,
-        on_delete=models.CASCADE)
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='userprofile',
+    )
     street_address = models.CharField(
         max_length=150)
     city_state = models.CharField(
@@ -19,7 +22,7 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return self.user.username
-    
+
     def get_absolute_url(self):
         return reverse('profile')
 
@@ -37,7 +40,7 @@ class Conference(models.Model):
     results_root = models.CharField(
         max_length=15,
         default='{0}/{1}'.format(shortname, 'runs'))
-    
+
     def __str__(self):
         return self.shortname
 
@@ -71,7 +74,7 @@ class Organization(models.Model):
 
     def __str__(self):
         return self.shortname
-    
+
     def get_absolute_url(self):
         return reverse('org-detail', args=[str(self.shortname)])
 
@@ -88,7 +91,7 @@ class Signature(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     date = models.DateField(auto_now_add=True)
     agreement = models.ForeignKey(Agreement, on_delete=models.CASCADE)
-        
+
 class Task(models.Model):
     """A Task is like a TREC track, a thing in a Conference that people submit things to."""
     shortname = models.CharField(
@@ -145,7 +148,7 @@ class SubmitFormField(models.Model):
         default=QuestionType.TEXT)
     def __str__(self):
         return self.meta_key
-    
+
     class Meta:
         ordering = ['sequence']
 

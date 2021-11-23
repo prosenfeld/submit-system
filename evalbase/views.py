@@ -11,8 +11,8 @@ from .models import *
 from .forms import *
 
 class SignUp(generic.edit.CreateView):
-    form_class = UserCreationForm
-    success_url = reverse_lazy('home')
+    form_class = SignupForm
+    success_url = reverse_lazy('profile-create')
     template_name = 'evalbase/signup.html'
 
 class EvalBaseLoginReqdMixin(LoginRequiredMixin):

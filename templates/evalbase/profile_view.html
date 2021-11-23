@@ -3,16 +3,17 @@
 {% block title %}Profile{% endblock %}
 {% block content %}
 {% if userprofile is not None %}
-  <p>User: {{ user.username }}</p>
-  <p>Email: {{ user.email }}</p>
-  <p>Street: {{ userprofile.street_address }}</p>
-  <p>City/State: {{ userprofile.city_state }}</p>
-  <p>Country: {{ userprofile.country }}</p>
-  <p>Postal code: {{ userprofile.postal_code }}</p>
+<p>User: {{ user.username }} ({{ user.first_name }} {{ user.last_name }})</p>
+<p>Email: {{ user.email }}</p>
+<p>Street: {{ userprofile.street_address }}</p>
+<p>City/State: {{ userprofile.city_state }}</p>
+<p>Country: {{ userprofile.country }}</p>
+<p>Postal code: {{ userprofile.postal_code }}</p>
 
-  <p><a href="{% url 'profile-edit' %}">Edit</a> your profile.</p>
+<p><a href="{% url 'profile-edit' %}">Edit</a> your profile.</p>
 {% else %}
-  <p>Your profile is blank.  Please
+<p>Your profile is blank.  Please
   <a href="{% url 'profile-create' %}">create it.</a></p>
 {% endif %}
+<a href="{% url 'home' %}">Return to home.</a>
 {% endblock %}
