@@ -1,0 +1,12 @@
+{% extends "evalbase/base.html" %}
+{% load bootstrap5 %}
+
+{% block header %}{% endblock %}
+{% block content %}
+<div class="container row justify-content-center mx-auto">
+  <div class="col-6">
+    {% block auth_content %}
+    {% endblock %}
+  </div>
+</div>
+{% endblock %}

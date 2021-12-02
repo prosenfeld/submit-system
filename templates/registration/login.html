@@ -1,16 +1,17 @@
-{% extends 'evalbase/base.html' %}
+{% extends "registration/auth.html" %}
 {% load bootstrap5 %}
 
-{% block title %}
-Login
-{% endblock %}
+{% block title %}Evalbase login{% endblock %}
 
-{% block content %}
-<form method="post">
-  {% csrf_token %}
-  {% bootstrap_form form %}
-  {% buttons %}
-    <button type="submit" class="btn btn-primary">Login</button>
-  {% endbuttons %}
-</form>
+{% block auth_content %}
+
+    <h1 class="display-2 text-center">Evalbase</h1>
+    <p class="text-center">Please sign in</p>
+    <form method="post">
+      {% csrf_token %}
+      {% bootstrap_form form show_label=False %}
+      <button type="submit" class="btn btn-primary">Login</button>
+      <a role="button" class="btn btn-primary" href="{% url 'password_reset' %}">Reset Password</a>
+    </form>
+
 {% endblock %}

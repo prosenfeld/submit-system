@@ -3,12 +3,6 @@
 {% block title %} evalbase Home {% endblock %}
 
 {% block content %}
-{% if user.is_authenticated %}
-<p>
-Hi {{ user.first_name }}! <br/>
-<a href="{% url 'profile' %}">profile</a> &nbsp; | &nbsp;
-<a href="{% url 'logout' %}">logout</a>
-</p>
 
 <p>
 You are currently signed up to participate in:<br/>
@@ -43,12 +37,4 @@ link.)
 {% endif %}
 </p>
 
-
-
-{% else %}
-  <p>You are not logged in</p>
-  <a href="{% url 'login' %}">login</a> or
-  <a href="{% url 'signup' %}">create an account</a> or
-  <a href="{% url 'password_reset' %}">reset password</a>
-{% endif %}
 {% endblock %}
