@@ -29,11 +29,6 @@
               <li><a href="{% url 'logout' %}">Sign out</a></li>
             </ul>
           </div>
-          {% else %}
-          <div class="text-end">
-            <a class="btn btn-outline-primary" role="button" href="{% url 'login' %}">Login</a>
-            <a class="btn btn-primary" role="button" href="{% url 'signup' %}">Sign-up</a>
-          </div>
           {% endif %}
 
         </header>

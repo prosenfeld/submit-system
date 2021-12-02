@@ -132,8 +132,7 @@ class ListAgreements(EvalBaseLoginReqdMixin, generic.ListView):
         conf = Conference.objects.get(shortname=self.kwargs['conf'])
         return conf.agreements.all()
 
-
-class HomeView(generic.base.TemplateView):
+class HomeView(LoginRequiredMixin, generic.base.TemplateView):
     template_name = 'evalbase/home.html'
 
     def get_context_data(self, **kwargs):
