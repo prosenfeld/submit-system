@@ -10,6 +10,7 @@
   <body>
     {% bootstrap_javascript %}
     <div class="col-lg-10 mx-auto">
+      {% block header %}
       <div class="container">
         <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
           <a href="{% url 'home' %}"
@@ -17,16 +18,28 @@
             <span class="fs-4">Evalbase</span>
           </a>
 
-          <ul class="nav nav-pills">
-            <li class="nav-item"><a href="{% url 'home' %}" class="nav-link active" aria-current="page">Home</a></li>
-            <li class="nav-item"><a href="#" class="nav-link">Features</a></li>
-            <li class="nav-item"><a href="#" class="nav-link">Pricing</a></li>
-            <li class="nav-item"><a href="#" class="nav-link">FAQs</a></li>
-            <li class="nav-item"><a href="#" class="nav-link">About</a></li>
-          </ul>
+          {% if user.is_authenticated %}
+          <div class="dropdown text-end">
+            <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle"
+               id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+              {{ user.first_name }}
+            </a>
+            <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser1">
+              <li><a href="{% url 'profile' %}">Profile</a></li>
+              <li><a href="{% url 'logout' %}">Sign out</a></li>
+            </ul>
+          </div>
+          {% else %}
+          <div class="text-end">
+            <a class="btn btn-outline-primary" role="button" href="{% url 'login' %}">Login</a>
+            <a class="btn btn-primary" role="button" href="{% url 'signup' %}">Sign-up</a>
+          </div>
+          {% endif %}
+
         </header>
       </div>
       <div class="b-example-divider"></div>
+      {% endblock %}
 
       <main>
         {% block content %}
@@ -36,58 +49,56 @@
 
       <div class="container">
         <footer class="row py-5 my-5 border-top">
-          <div class="col-sm-4">
-            <a href="https://www.nist.gov/" class="d-flex align-items-center mb-3 link-dark text-decoration-none">
-              <img src="{% static 'evalbase/logo-2x.png' %}" width="300px" alt="National Institute of Standards and Technology logo" />
-            </a>
-            <p class="text-muted">2021</p>
-          </div>
-
-          <div class="col">
-            <ul class="nav flex-row">
-              <li class="nav-item">
+            <ul class="text-center list-inline">
+          <li class="list-inline-item">
+            <a href="https://www.nist.gov/">
+              <img src="{% static 'evalbase/logo-2x.png' %}" width="150px" alt="National Institute of Standards and Technology logo" />
+            </a></li>
+              <li class="list-inline-item">
                 <a class="nav-link" href="https://www.nist.gov/privacy-policy">Site Privacy</a>
               </li>
-              <li class="nav-item">
+              <li class="list-inline-item">
                 <a class="nav-link" href="https://www.nist.gov/oism/accessibility">Accessibility</a>
               </li>
-              <li class="nav-item">
+              <li class="list-inline-item">
                 <a class="nav-link" href="https://www.nist.gov/privacy">Privacy Program</a>
               </li>
-              <li class="nav-item">
+              <li class="list-inline-item">
                 <a class="nav-link" href="https://www.nist.gov/oism/copyrights">Copyrights</a>
               </li>
-              <li class="nav-item">
+              <li class="list-inline-item">
                 <a class="nav-link" href="https://www.commerce.gov/vulnerability-disclosure-policy">Vulnerability Disclosure</a>
               </li>
-              <li class="nav-item">
+              <li class="list-inline-item">
                 <a class="nav-link" href="https://www.nist.gov/no-fear-act-policy">No Fear Act Policy</a>
               </li>
-              <li class="nav-item">
+              <li class="list-inline-item">
                 <a class="nav-link" href="https://www.nist.gov/foia">FOIA</a>
               </li>
-              <li class="nav-item">
+              <li class="list-inline-item">
                 <a class="nav-link" href="https://www.nist.gov/environmental-policy-statement">Environmental Policy</a>
               </li>
-              <li class="nav-item ">
+              <li class="list-inline-item ">
                 <a class="nav-link" href="https://www.nist.gov/summary-report-scientific-integrity">Scientific Integrity</a>
               </li>
-              <li class="nav-item ">
+              <li class="list-inline-item ">
                 <a class="nav-link" href="https://www.nist.gov/nist-information-quality-standards">Information Quality Standards</a>
               </li>
-              <li class="nav-item">
+              <li class="list-inline-item">
                 <a class="nav-link" href="https://www.commerce.gov/">Commerce.gov</a>
               </li>
-              <li class="nav-item">
+              <li class="list-inline-item">
                 <a class="nav-link" href="https://www.science.gov/">Science.gov</a>
               </li>
-              <li class="nav-item">
+              <li class="list-inline-item">
                 <a class="nav-link" href="https://www.usa.gov/">USA.gov</a>
               </li>
-              <li class="nav-item">
+              <li class="list-inline-item">
                 <a class="nav-link" href="https://vote.gov/">Vote.gov</a>
               </li>
             </ul>
+                      </p>
+
           </div>
         </footer>
       </div>
