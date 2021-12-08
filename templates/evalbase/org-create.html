@@ -4,13 +4,18 @@
 {% block title %}Create an organization{% endblock %}
 
 {% block content %}
-Complete this form to register to participate in {{ conf.longname }}</p>
-<form method="post">
-  {% csrf_token %}
-  {% bootstrap_field form.shortname show_help=True placeholder='nist' %}
-  {% bootstrap_field form.longname show_help=True placeholder='National Institute of Standards and Technology' %}
-  {% buttons %}
-    <button type="submit" class="btn btn-primary">Create</button>
-  {% endbuttons %}
-</form>
+
+<div class="container">
+  <div class="row justify-content-md-center">
+    <div class="col-8">
+      <p>Complete this form to register to participate in {{ conf.longname }}.  You will be listed as the primary organizational contact.  Once you've registered to participate, you will have a signup link you can share with members of your organization who are also participating in this evaluation.</p>
+      <form method="post">
+        {% csrf_token %}
+        {% bootstrap_field form.shortname show_help=True placeholder='nist' %}
+        {% bootstrap_field form.longname show_help=True placeholder='National Institute of Standards and Technology' %}
+        {% buttons %}
+        <button type="submit" class="btn btn-primary">Create</button>
+        {% endbuttons %}
+      </form>
+
 {% endblock %}

@@ -75,7 +75,7 @@ class OrganizationDetail(EvalBaseLoginReqdMixin, generic.DetailView):
     def get_object(self):
         try:
             org = Organization.objects.get(shortname=self.kwargs['shortname'])
-            if org.members.filter(pk=self.request.user.pk).exists():
+            if org.owner == self.request.user or org.members.filter(pk=self.request.user.pk).exists():
                 return org
             else:
                 raise PermissionDenied()
@@ -99,6 +99,7 @@ class OrganizationCreate(EvalBaseLoginReqdMixin, generic.edit.CreateView):
         confname = self.kwargs['conf']
         form.instance.conference = Conference.objects.get(shortname=confname)
         form.instance.passphrase = uuid.uuid4()
+        form.instance.members.add(self.request.user)
         return super().form_valid(form)
 
 
