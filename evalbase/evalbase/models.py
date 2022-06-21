@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.db.models import Q
 from django.contrib.auth.models import User
 from django.urls import reverse, reverse_lazy
 
@@ -71,6 +72,10 @@ class Organization(models.Model):
     conference = models.ForeignKey(
         Conference,
         on_delete=models.PROTECT)
+    task_interest = models.ManyToManyField(
+        to='Task',
+        #limit_choices_to=Q(conference=conference)
+    )
 
     def __str__(self):
         return self.shortname

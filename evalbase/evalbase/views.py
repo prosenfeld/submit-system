@@ -85,7 +85,7 @@ class OrganizationDetail(EvalBaseLoginReqdMixin, generic.DetailView):
 class OrganizationCreate(EvalBaseLoginReqdMixin, generic.edit.CreateView):
     model = Organization
     template_name = 'evalbase/org-create.html'
-    fields = ['shortname', 'longname']
+    fields = ['shortname', 'longname', 'task_interest']
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
