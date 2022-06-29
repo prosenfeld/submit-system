@@ -17,19 +17,24 @@ class ConferenxeAdmin(admin.ModelAdmin):
 class OrganizationAdmin(admin.ModelAdmin):
     readonly_fields = [ 'passphrase' ]
 
+
 admin.site.register(Agreement)    
-    
+
+
 class SubmitFormFieldInline(admin.TabularInline):
     model = SubmitFormField
     extra = 3
     list_display = ('sequence', 'question', 'meta_key')
-    
+
+
 @admin.register(SubmitForm)
 class SubmitFormAdmin(admin.ModelAdmin):
     inlines = [SubmitFormFieldInline]
 
+
 class SubmitMetaInline(admin.TabularInline):
     model = SubmitMeta
+
 
 @admin.register(Submission)
 class SubmissionAdmin(admin.ModelAdmin):

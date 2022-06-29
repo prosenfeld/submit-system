@@ -134,7 +134,10 @@ STATICFILES_DIRS = [
 ]
 
 # Email setup
-EMAIL_HOST = 'smtp.nist.gov'
+# EMAIL_HOST = 'smtp.nist.gov'
+# Temporary Put in local folder for testing
+EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
+EMAIL_FILE_PATH = "/home/pinchas/Projects/submit-system/sent_emails"
 
 # Login redirect
 LOGIN_REDIRECT_URL = 'home'

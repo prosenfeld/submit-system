@@ -38,7 +38,7 @@ class Conference(models.Model):
     admin_contact = models.EmailField()
     complete = models.BooleanField()
     agreements = models.ManyToManyField('Agreement', blank=True)
-    results_root = models.CharField(
+    results_root: str = models.CharField(
         max_length=15,
         default='{0}/{1}'.format(shortname, 'runs'))
 
@@ -162,7 +162,6 @@ def get_submission_path(submission, filename):
                                                         submission.task.shortname,
                                                         submission.runtag,
                                                         submission.file.name)
-
 class Submission(models.Model):
     """A Submission is something that got submitted to a Task via a SubmitForm."""
     runtag = models.CharField(max_length=15)

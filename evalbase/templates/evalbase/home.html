@@ -34,14 +34,23 @@
           <li><a href="{% url 'org-create' conf %}">
               ({{ conf.shortname }})</a>
             {{ conf.longname }}</li>
-          {% endfor %}
+          {% endfor %}s
         </ul>
-        <p>(Follow a link below to <b>register a new organization</b> with a
+        <p>(Follow a link above to <b>register a new organization</b> with a
         conference.  To <b>join</b> an organization, ask their contact for the group signup link.)</p>
         {% else %}
         (none right now, come back later!)
         {% endif %}
+
+        <p>
+            Already Submitted:
+        <ul>
+          {% for sub in submissions %}
+          <li> <a href="{% url 'run' sub.task.conference.shortname sub.task.shortname sub.runtag %}"> {{ sub.runtag }}</a> (#{{ sub.id }})</li>
+          {% endfor %}
+        </ul>
       </p>
+
     </div>
   </div>
 </div>
