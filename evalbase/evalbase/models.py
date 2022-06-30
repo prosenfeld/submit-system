@@ -38,7 +38,7 @@ class Conference(models.Model):
     admin_contact = models.EmailField()
     complete = models.BooleanField()
     agreements = models.ManyToManyField('Agreement', blank=True)
-    results_root: str = models.CharField(
+    results_root = models.CharField(
         max_length=15,
         default='{0}/{1}'.format(shortname, 'runs'))
 
@@ -191,3 +191,5 @@ class SubmitMeta(models.Model):
         on_delete=models.PROTECT)
     key = models.CharField(max_length=15)
     value = models.CharField(max_length=250)
+
+

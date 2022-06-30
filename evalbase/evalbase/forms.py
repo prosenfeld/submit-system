@@ -66,6 +66,70 @@ class SubmitFormForm(forms.Form):
                                                            choices=[('yes', 'Yes'), ('no', 'No')])
         return type('SubmitFormForm', (forms.Form,), fields)
 
+    def edit_form_class(context):
+        fields = {}
+        # Set up standard fields
+        fields['conf'] = forms.CharField(widget=forms.HiddenInput(), initial=context['conf'].shortname)
+        fields['task'] = forms.CharField(widget=forms.HiddenInput(), initial=context['task'].shortname)
+
+        fields['user'] = forms.CharField(label='User name',
+                                         widget=forms.TextInput(attrs={'value': context['user'].username,
+                                                                       'readonly': 'readonly',
+                                                                       'class': 'form-control-plaintext'}))
+        fields['email'] = forms.EmailField(label='Email',
+                                           widget=forms.EmailInput(attrs={'value': context['user'].email,
+                                                                          'readonly': 'readonly',
+                                                                          'class': 'form-control-plaintext'}))
+        org_choices = list(map(lambda x: (x.shortname, x.longname), context['orgs']))
+        fields['org'] = forms.ChoiceField(label='Organization', choices=org_choices, initial=context['org'])
+
+        fields['runtag'] = forms.CharField(label='runtag',
+                                           validators=[SubmitFormForm.make_runtag_checker(context)], initial=context['runtag'])
+
+        fields['runfile'] = forms.FileField(label='Submission file', initial=context["file"]) #FIXME
+
+        # Set up custom fields
+        other_fields = SubmitFormField.objects.filter(submit_form=context['form']).order_by('sequence')
+        for field in other_fields:
+            if field.question_type == SubmitFormField.QuestionType.TEXT:
+                print("OG:")
+                print(original)
+                original = SubmitMeta.objects.filter(key=field.meta_key).filter(submission_id=context["id"])[0]
+                fields[field.meta_key] = forms.CharField(label=field.question, initial=original.value)
+
+            elif field.question_type == SubmitFormField.QuestionType.NUMBER:
+                original = SubmitMeta.objects.filter(key=field.meta_key).filter(submission_id=context["id"])[0]
+                fields[field.meta_key] = forms.IntegerField(label=field.question, initial=original.value)
+
+            elif field.question_type == SubmitFormField.QuestionType.RADIO:
+                original = SubmitMeta.objects.filter(key=field.meta_key).filter(submission_id=context["id"])[0]
+                choices = list(map(lambda x: (x, x), field.choices.split(',')))
+                fields[field.meta_key] = forms.ChoiceField(label=field.question, choices=choices, initial=original.value)
+
+            elif field.question_type == SubmitFormField.QuestionType.CHECKBOX:
+                original = SubmitMeta.objects.filter(key=field.meta_key).filter(submission_id=context["id"])[0]
+                choices = list(map(lambda x: (x, x), field.choices.split(',')))
+                fields[field.meta_key] = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple,
+                                                                   choices=choices, initial=original.value)
+
+            elif field.question_type == SubmitFormField.QuestionType.EMAIL:
+                original = SubmitMeta.objects.filter(key=field.meta_key).filter(submission_id=context["id"])[0]
+                fields[field.meta_key] = forms.EmailField(label=field.question, initial=original.value)
+
+            elif field.question_type == SubmitFormField.QuestionType.COMMENT:
+                original = SubmitMeta.objects.filter(key=field.meta_key).filter(submission_id=context["id"])[0]
+                fields[field.meta_key] = forms.CharField(label=field.question,
+                                                         widget=forms.Textarea, initial=original.value)
+
+            elif field.question_type == SubmitFormField.QuestionType.YESNO:
+                original = SubmitMeta.objects.filter(key=field.meta_key).filter(submission_id=context["id"])[0]
+                fields[field.meta_key] = forms.ChoiceField(label=field.question,
+                                                           choices=[('yes', 'Yes'), ('no', 'No')],initial=original.value)
+
+
+        return type('SubmitFormForm', (forms.Form,), fields)
+
+
     def make_runtag_checker(context):
         def thunk(value):
             tags = SubmitMeta.objects.filter(submission__task=context['task']).filter(key='runtag').filter(value=value)

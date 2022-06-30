@@ -39,3 +39,5 @@ class SubmitMetaInline(admin.TabularInline):
 @admin.register(Submission)
 class SubmissionAdmin(admin.ModelAdmin):
     inlines = [SubmitMetaInline]
+
+

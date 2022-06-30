@@ -1,13 +1,14 @@
 import uuid
 from datetime import datetime
 from django import utils
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.views import generic
-from django.http import HttpResponseRedirect, Http404
-from django.shortcuts import render
+from django.http import HttpResponseRedirect, Http404, FileResponse
+from django.shortcuts import render, get_object_or_404
 from django.core.exceptions import PermissionDenied
 from .models import *
 from .forms import *
@@ -176,12 +177,10 @@ class SubmitTask(EvalBaseLoginReqdMixin, generic.TemplateView):
         context['task'] = task
         context['form'] = submitform
         context['user'] = self.request.user
-        # Adding groups to confrences is broken right now, so I'm choosing any temporarily.
+        # Adding groups to conferences is broken right now, so I'm choosing any temporarily.
         # This will need to get changed. TODO
         # context['orgs'] = Organization.objects.filter(members=self.request.user).filter(conference=conf)
         context['orgs'] = Organization.objects.all()
-        print(Organization.objects.all())
-
 
         form_class = SubmitFormForm.get_form_class(context)
         sff = form_class()
@@ -199,8 +198,6 @@ class SubmitTask(EvalBaseLoginReqdMixin, generic.TemplateView):
                              submitted_by=request.user,
                              runtag=stuff['runtag'],
                              file=stuff['runfile'],
-                             # TODO: Check if these are correct
-                             # date=utils.timezone.now(),
                              is_validated=False,
                              has_evaluation=False
                              )
@@ -212,10 +209,64 @@ class SubmitTask(EvalBaseLoginReqdMixin, generic.TemplateView):
                 smeta = SubmitMeta(submission=sub, form_field=field, key=field.meta_key, value=stuff[field.meta_key])
                 smeta.save()
             return render(request, 'evalbase/home.html', context={'form': stuff})
+            ## FIXME - Not the correct forwarding after
+        else:
+            context['gen_form'] = form
+            return render(request, 'evalbase/submit.html', context=context)
+
+class EditTask(EvalBaseLoginReqdMixin, generic.TemplateView):
+    template_name = 'evalbase/edit.html'
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        conf = Conference.objects.get(shortname=kwargs['conf'])
+        task = Task.objects.get(shortname=kwargs['task'], conference=conf)
+        submitform = SubmitForm.objects.get(task=task)
+        run = Submission.objects.filter(submitted_by_id=self.request.user.id).filter(task__conference__shortname=self.kwargs['conf']).filter(id = context['id'])[0]
+        context['conf'] = conf
+        context['task'] = task
+        context['form'] = submitform
+        context['user'] = self.request.user
+        context['org'] = run.org
+        context['runtag'] = run.runtag
+        context['file'] = run.file
+        context['id'] = run.id
+        # Adding groups to conferences is broken right now, so I'm choosing any temporarily.
+        # This will need to get changed. TODO
+        # context['orgs'] = Organization.objects.filter(members=self.request.user).filter(conference=conf)
+        context['orgs'] = Organization.objects.all()
+        form_class = SubmitFormForm.edit_form_class(context)
+        sff = form_class()
+        context['gen_form'] = sff
+        return context
+
+    def post(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
+        form_class = SubmitFormForm.get_form_class(context)
+        form = form_class(request.POST, request.FILES)
+        if form.is_valid():
+            run = Submission.objects.filter(submitted_by_id=self.request.user.id).filter(
+                task__conference__shortname=self.kwargs['conf']).filter(id=context['id'])[0]
+            stuff = form.cleaned_data
+            print("FILE IS")
+            print(stuff['runfile'])
+            run.file = stuff['runfile']
+            run.org = Organization.objects.filter(conference=context['conf']).filter(shortname=stuff['org'])[0]
+            run.runtag = stuff['runtag']
+            run.save()
+
+            custom_fields = SubmitFormField.objects.filter(submit_form=context['form'])
+            for field in custom_fields:
+                original = SubmitMeta.objects.filter(key=field.meta_key).filter(submission_id=run.id)[0]
+                original.value = stuff[field.meta_key]
+                original.save()
+
+
+            return render(request, 'evalbase/home.html', context={'form': stuff})
             ## FIXME
         else:
             context['gen_form'] = form
             return render(request, 'evalbase/submit.html', context=context)
+
 
 
 class Submissions(EvalBaseLoginReqdMixin, generic.TemplateView):
@@ -236,3 +287,20 @@ class Submissions(EvalBaseLoginReqdMixin, generic.TemplateView):
         context["file"] = context['submission'].file
         return context
 
+
+@login_required
+def download(request, conf, task, runtag):
+    print(request,conf,task, runtag)
+    run = Submission.objects.filter(runtag=runtag).filter(task__conference__shortname=conf)
+    if run[0].submitted_by != request.user:
+        raise PermissionDenied()
+    sub = run[0]
+    file = sub.file
+    try:
+        filepath = settings.DOWNLOAD_DATA + "/" +  file.url
+        print(filepath)
+
+        return FileResponse(open(filepath, 'rb'),
+            as_attachment=True)
+    except FileNotFoundError:
+        raise Http404(f'file-not-found, {filepath}')

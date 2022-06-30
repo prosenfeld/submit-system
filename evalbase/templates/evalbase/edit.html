@@ -1,0 +1,19 @@
+{% extends 'evalbase/base.html' %}
+{% load bootstrap5 %}
+
+{% block title %} Edit - {{ task.conference.shortname }} {{ task.shortname }} {% endblock %}
+
+{% block content %}
+
+{% if form.header_template %}
+{% include form.header_template %}
+<p/>
+{% endif %}
+
+<form enctype="multipart/form-data" method="post">
+{% csrf_token %}
+{% bootstrap_form gen_form %}
+<button type="submit" class="btn btn-primary">Save Changes</button>
+</form>
+
+{% endblock %}

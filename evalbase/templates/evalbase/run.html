@@ -4,7 +4,9 @@
 {% block title %} {{ submission.runtag }} {% endblock %}
 
 {% block content %}
-<h4>Submission {{ submission.runtag }}</h4>
+<h4>Submission {{ submission.runtag }} (# {{ submission.id }})</h4>
+    <a href = "{% url 'edit-task' submission.task.conference.shortname submission.task.shortname submission.id %}">Edit this submission</a>
+
 <ul>
     <li> Conference: {{ submission.task.conference.longname }} ({{ submission.task.conference.shortname }})</li>
   <li> Task: {{ submission.task.shortname }} </li>
@@ -22,6 +24,6 @@
   {% endfor %}
 </ul>
 
-    <a href = "{{ submission.file }}" download>Uploaded file</a>
+    <a href = "{% url 'run-download' submission.task.conference.shortname  submission.task.shortname submission.runtag  %} " download>Uploaded file</a>
 
 {% endblock %}

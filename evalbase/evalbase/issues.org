@@ -28,6 +28,8 @@
 ** TODO BUG when creating a profile don't force a login in the middle
 ** TODO BUG creating an org fails with an error
 ** TODO Allow submissions to be viewed properly
+** TODO BUG Files are not downloadable from the admin side or edit page
+** TODO BUG Fix handling of edit page when given wrong task
 
 
 ** DONE BUG: Signup doesn't take a display name or email address
