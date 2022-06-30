@@ -134,10 +134,7 @@ STATICFILES_DIRS = [
 ]
 
 # Email setup
-# EMAIL_HOST = 'smtp.nist.gov'
-# Temporary Put in local folder for testing
-EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
-EMAIL_FILE_PATH = "/home/pinchas/Projects/submit-system/sent_emails"
+EMAIL_HOST = 'smtp.nist.gov'
 
 # Login redirect
 LOGIN_REDIRECT_URL = 'home'
@@ -145,6 +142,3 @@ LOGOUT_REDIRECT_URL = 'login'
 LOGIN_URL = 'login'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-#Stored files, for now
-DOWNLOAD_DATA = "/home/pinchas/Projects/submit-system/evalbase/"
