@@ -24,11 +24,21 @@
 ** TODO Sign an agreement
 ** TODO View agreements signed and unsigned
 ** TODO make an activity log more application-specific than "recent changes"
+
+** TODO BUG when creating a profile don't force a login in the middle
+** TODO BUG creating an org fails with an error
+** TODO Allow submissions to be viewed properly
+** TODO BUG Files are not downloadable from the admin side or edit page
+** TODO BUG Fix handling of edit page when given wrong task
+
+
 ** DONE BUG: Signup doesn't take a display name or email address
 CLOSED: [2021-11-23 Tue 15:09]
 ** DONE BUG: Logging in with no profile should take you to profile creation
 CLOSED: [2021-11-23 Tue 15:09]
 ** DONE BUG: Well, creating a new account should also take the profile too
 CLOSED: [2021-11-23 Tue 15:09]
+
+
 
 

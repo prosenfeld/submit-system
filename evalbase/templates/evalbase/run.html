@@ -4,19 +4,26 @@
 {% block title %} {{ submission.runtag }} {% endblock %}
 
 {% block content %}
+<h4>Submission {{ submission.runtag }} (# {{ submission.id }})</h4>
+    <a href = "{% url 'edit-task' submission.task.conference.shortname submission.task.shortname submission.id %}">Edit this submission</a>
 
 <ul>
-  <li> Submitted by {{ submission.submitted_by }} </li>
+    <li> Conference: {{ submission.task.conference.longname }} ({{ submission.task.conference.shortname }})</li>
+  <li> Task: {{ submission.task.shortname }} </li>
+  <li> Submitted by: {{ submission.submitted_by }} </li>
   <li> Organization: {{ submission.org }} </li>
   <li> Date: {{ submission.date }} </li>
-  <li> Task: {{ submission.task.shortname }} </li>
+
 </ul>
 
-<h2> Run metadata </h2>
+<h4> Run metadata </h4>
 
 <ul>
   {% for m in metas %}
   <li> {{ fields|get_item:m.key }} : {{ m.value }} </li>
   {% endfor %}
 </ul>
+
+    <a href = "{% url 'run-download' submission.task.conference.shortname  submission.task.shortname submission.runtag  %} " download>Uploaded file</a>
+
 {% endblock %}

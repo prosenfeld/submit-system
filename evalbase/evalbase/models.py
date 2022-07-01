@@ -162,7 +162,6 @@ def get_submission_path(submission, filename):
                                                         submission.task.shortname,
                                                         submission.runtag,
                                                         submission.file.name)
-
 class Submission(models.Model):
     """A Submission is something that got submitted to a Task via a SubmitForm."""
     runtag = models.CharField(max_length=15)
@@ -192,3 +191,5 @@ class SubmitMeta(models.Model):
         on_delete=models.PROTECT)
     key = models.CharField(max_length=15)
     value = models.CharField(max_length=250)
+
+
