@@ -134,7 +134,12 @@ STATICFILES_DIRS = [
 ]
 
 # Email setup
-EMAIL_HOST = 'smtp.nist.gov'
+# for deployment:
+# EMAIL_HOST = 'smtp.nist.gov'
+#
+# for development:
+EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+EMAIL_FILE_PATH = Path(BASE_DIR) / 'sent_emails'
 
 # Login redirect
 LOGIN_REDIRECT_URL = 'home'
